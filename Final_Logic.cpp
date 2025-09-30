@@ -190,26 +190,56 @@ unordered_map<string, unordered_map<string, unordered_map<string, vector<pair<st
         }}
     }}
 };
-unordered_map<string, unordered_map<string, vector<pair<string, string>>>> NTPCLogicLines = {
-    {"UR", {
-        {"OPEN", { {"UR","OPEN"} }},
-        {"PWD", { {"UR","PWD"}, {"UR","OPEN"} }}
+unordered_map<string, unordered_map<string, unordered_map<string, vector<pair<string, string>>>>> NTPCLogicLines = {
+    { "UR", {
+        {"M", {
+            {"OPEN", { {"UR","OPEN"} }},
+            {"PWD",  { {"UR","PWD"}, {"UR","OPEN"} }}
+        }},
+        {"F", {
+            {"OPEN", { {"UR","F"}, {"UR","OPEN"} }},
+            {"PWD",  { {"UR","F"}, {"UR","PWD"}, {"UR","OPEN"} }}
+        }}
     }},
-    {"SC", {
-        {"OPEN", { {"SC","OPEN"} }},
-        {"PWD", { {"SC","PWD"}, {"SC","OPEN"} }}
+    { "SC", {
+        {"M", {
+            {"OPEN", { {"SC","OPEN"} }},
+            {"PWD",  { {"SC","PWD"}, {"SC","OPEN"} }}
+        }},
+        {"F", {
+            {"OPEN", { {"SC","F"}, {"SC","OPEN"} }},
+            {"PWD",  { {"SC","F"}, {"SC","PWD"}, {"SC","OPEN"} }}
+        }}
     }},
-    {"ST", {
-        {"OPEN", { {"ST","OPEN"} }},
-        {"PWD", { {"ST","PWD"}, {"ST","OPEN"} }}
+    { "ST", {
+        {"M", {
+            {"OPEN", { {"ST","OPEN"} }},
+            {"PWD",  { {"ST","PWD"}, {"ST","OPEN"} }}
+        }},
+        {"F", {
+            {"OPEN", { {"ST","F"}, {"ST","OPEN"} }},
+            {"PWD",  { {"ST","F"}, {"ST","PWD"}, {"ST","OPEN"} }}
+        }}
     }},
-    {"OBC", {
-        {"OPEN", { {"OBC","OPEN"} }},
-        {"PWD", { {"OBC","PWD"}, {"OBC","OPEN"} }}
+    { "OBC", {
+        {"M", {
+            {"OPEN", { {"OBC","OPEN"} }},
+            {"PWD",  { {"OBC","PWD"}, {"OBC","OPEN"} }}
+        }},
+        {"F", {
+            {"OPEN", { {"OBC","F"}, {"OBC","OPEN"} }},
+            {"PWD",  { {"OBC","F"}, {"OBC","PWD"}, {"OBC","OPEN"} }}
+        }}
     }},
-    {"EWS", {
-        {"OPEN", { {"EWS","OPEN"} }},
-        {"PWD", { {"EWS","PWD"}, {"EWS","OPEN"} }}
+    { "EWS", {
+        {"M", {
+            {"OPEN", { {"EWS","OPEN"} }},
+            {"PWD",  { {"EWS","PWD"}, {"EWS","OPEN"} }}
+        }},
+        {"F", {
+            {"OPEN", { {"EWS","F"}, {"EWS","OPEN"} }},
+            {"PWD",  { {"EWS","F"}, {"EWS","PWD"}, {"EWS","OPEN"} }}
+        }}
     }}
 };
 unordered_map<string, int> KashmiriSeats = { {"CSE", 1}, {"DSAI", 1}, {"ECE", 1} };
@@ -308,23 +338,23 @@ bool ExtractingSeatMatrixCSV(){
         fields = splitCSV(line);
         NTPCSeats[i]["UR"]["OPEN"] = stoi(fields[1]), Capacity+= stoi(fields[1]);
         NTPCSeats[i]["UR"]["PWD"] = stoi(fields[2]), Capacity+= stoi(fields[2]);
-        NTPCSeats[i]["UR"]["Female"] = stoi(fields[3]), Capacity+= stoi(fields[3]);
+        NTPCSeats[i]["UR"]["F"] = stoi(fields[3]), Capacity+= stoi(fields[3]);
 
         NTPCSeats[i]["ST"]["OPEN"] = stoi(fields[5]), Capacity+= stoi(fields[5]);
         NTPCSeats[i]["ST"]["PWD"] = stoi(fields[6]), Capacity+= stoi(fields[6]);
-        NTPCSeats[i]["ST"]["Female"] = stoi(fields[7]), Capacity+= stoi(fields[7]);
+        NTPCSeats[i]["ST"]["F"] = stoi(fields[7]), Capacity+= stoi(fields[7]);
 
         NTPCSeats[i]["SC"]["OPEN"] = stoi(fields[9]), Capacity+= stoi(fields[9]);
         NTPCSeats[i]["SC"]["PWD"] = stoi(fields[10]), Capacity+= stoi(fields[10]);
-        NTPCSeats[i]["SC"]["Female"] = stoi(fields[11]), Capacity+= stoi(fields[11]);
+        NTPCSeats[i]["SC"]["F"] = stoi(fields[11]), Capacity+= stoi(fields[11]);
 
         NTPCSeats[i]["OBC"]["OPEN"] = stoi(fields[13]), Capacity+= stoi(fields[13]);
         NTPCSeats[i]["OBC"]["PWD"] = stoi(fields[14]), Capacity+= stoi(fields[14]);
-        NTPCSeats[i]["OBC"]["Female"] = stoi(fields[15]), Capacity+= stoi(fields[15]);
+        NTPCSeats[i]["OBC"]["F"] = stoi(fields[15]), Capacity+= stoi(fields[15]);
 
         NTPCSeats[i]["EWS"]["OPEN"] = stoi(fields[17]), Capacity+= stoi(fields[17]);
         NTPCSeats[i]["EWS"]["PWD"] = stoi(fields[18]), Capacity+= stoi(fields[18]);
-        NTPCSeats[i]["EWS"]["Female"] = stoi(fields[19]), Capacity+= stoi(fields[19]);
+        NTPCSeats[i]["EWS"]["F"] = stoi(fields[19]), Capacity+= stoi(fields[19]);
         getline(fin, line);
     }
     cout <<"Seat Matrix Extraction Complete.\n";
@@ -410,44 +440,44 @@ bool AllotChoice(Applicant &Applicant, int Branch, string &Category, string &Quo
     else temp = "Kashmiri Migrant";
 
     if(Iteration==1){
-        if(Applicant.AppliedQuota == 1) ptr = &CHSeats[Branch][Category][Quota], temp+=  Category + "_" + Quota ;
-        else if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch][Category][Quota], temp+=  Category + "_" + Quota ;
+        if(Applicant.AppliedQuota == 1) ptr = &CHSeats[Branch][Category][Quota], temp+=  Category + "_" + (Quota=="OPEN"?"OP":Quota) ;
+        else if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch][Category][Quota], temp+=  Category + "_" + (Quota=="OPEN"?"OP":Quota) ;
         else if(Applicant.AppliedQuota == 3) ptr = &KashmiriSeats[ IntToBranch[Branch] ];
     }else if(Applicant.AppliedQuota == 3) return false;
     else if(Iteration==2){
         ptr = &CHSeats[Branch][Category]["OPEN"];
         if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch][Category]["OPEN"];
         
-        temp+=  Category + "_" + "XX->" + "OPEN";
+        temp+=  Category + "_" + "XX-->" + "OP";
     }else if(Iteration==3 && Category=="ST"){
         ptr = &CHSeats[Branch]["ST"]["OPEN"];
         if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["ST"]["OPEN"];
         
-        temp+=  ("SC->ST_OPEN");
+        temp+=  ("SC-->ST_OP");
     }else if(Iteration==4 && Category=="SC"){
         ptr = &CHSeats[Branch]["SC"]["OPEN"];
         if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["SC"]["OPEN"];
         
-        temp+=  "ST->SC_OPEN";
+        temp+=  "ST-->SC_OP";
     }else if(Iteration==5 && Category=="ST"){
         ptr = &CHSeats[Branch]["ST"]["OPEN"];
         if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["ST"]["OPEN"];
         
-        temp+=  "SC->ST_OPEN";
+        temp+=  "SC-->ST_OP";
     }else if(Iteration==6 && (Category=="OBC") ){
         ptr = &CHSeats[Branch]["OBC"]["OPEN"];
         if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["OBC"]["OPEN"];
         
-        temp+=  "ST->OBC_OPEN";
+        temp+=  "ST-->OBC_OP";
     }else if(Iteration==7 && Category=="UR"){
         ptr = &CHSeats[Branch]["UR"]["OPEN"];
         if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["UR"]["OPEN"];
         
-        temp+=  "OBC->UR_OPEN";
+        temp+=  "OBC-->UR_OP";
     }else if(Iteration==8 && Applicant.AppliedQuota == 2){
         ptr = &NTPCSeats[Branch]["UR"]["OPEN"];
         
-        temp+=  "EWS->UR_OPEN";
+        temp+=  "EWS-->UR_OP";
     }
 
     if( ptr && *ptr ){
@@ -496,7 +526,7 @@ void Iterate(){
         int op = 0;
         vector< pair<string,string> > *LogicLine;
         if(Applicants[i].AppliedQuota == 1) LogicLine = &LogicLines[Applicants[i].Category][Applicants[i].Gender][Applicants[i].Quota];
-        else if(Applicants[i].AppliedQuota == 2) LogicLine = &NTPCLogicLines[Applicants[i].Category][ Applicants[i].Quota == "PWD"? "PWD": "OPEN" ];
+        else if(Applicants[i].AppliedQuota == 2) LogicLine = &NTPCLogicLines[Applicants[i].Category][Applicants[i].Gender][ Applicants[i].Quota == "PWD"? "PWD": "OPEN" ];
         else{
             if( AllotChoice(Applicants[i], Applicants[i].Choice1, Applicants[i].Category, Applicants[i].Quota) ){}            
             else if( AllotChoice(Applicants[i], Applicants[i].Choice2, Applicants[i].Category, Applicants[i].Quota) ){}            
@@ -552,7 +582,7 @@ void MainLogic(){
     for(int i=0; i<3; i++){
         for(auto &x: NTPCSeats[i]){
             for(auto &y: x.second){
-                if(y.first=="OPEN" || y.first=="Female") continue;
+                if(y.first=="OPEN" || y.first=="F") continue;
                 NTPCSeats[i][x.first]["OPEN"]+= exchange(y.second, 0);
             }
         }
@@ -561,36 +591,36 @@ void MainLogic(){
     for(int i=0; i<3; i++){
         CHSeats[i]["ST"]["OPEN"]+= exchange(CHSeats[i]["SC"]["OPEN"], 0);
         NTPCSeats[i]["ST"]["OPEN"]+= exchange(NTPCSeats[i]["SC"]["OPEN"], 0);
-        NTPCSeats[i]["ST"]["Female"]+= exchange(NTPCSeats[i]["SC"]["Female"], 0);
+        NTPCSeats[i]["ST"]["F"]+= exchange(NTPCSeats[i]["SC"]["F"], 0);
     }
     Iterate();
     for(int i=0; i<3; i++){
         CHSeats[i]["SC"]["OPEN"]+= exchange(CHSeats[i]["ST"]["OPEN"], 0);
         NTPCSeats[i]["SC"]["OPEN"]+= exchange(NTPCSeats[i]["ST"]["OPEN"], 0);
-        NTPCSeats[i]["SC"]["Female"]+= exchange(NTPCSeats[i]["ST"]["Female"], 0);
+        NTPCSeats[i]["SC"]["F"]+= exchange(NTPCSeats[i]["ST"]["F"], 0);
     }
     Iterate(); 
     for(int i=0; i<3; i++){
         CHSeats[i]["ST"]["OPEN"]+= exchange(CHSeats[i]["SC"]["OPEN"], 0);
         NTPCSeats[i]["ST"]["OPEN"]+= exchange(NTPCSeats[i]["SC"]["OPEN"], 0);
-        NTPCSeats[i]["ST"]["Female"]+= exchange(NTPCSeats[i]["SC"]["Female"], 0);
+        NTPCSeats[i]["ST"]["F"]+= exchange(NTPCSeats[i]["SC"]["F"], 0);
     }
     Iterate();
     for(int i=0; i<3; i++){
         CHSeats[i]["OBC"]["OPEN"]+= exchange(CHSeats[i]["ST"]["OPEN"], 0);
         NTPCSeats[i]["OBC"]["OPEN"]+= exchange(NTPCSeats[i]["ST"]["OPEN"], 0);
-        NTPCSeats[i]["OBC"]["Female"]+= exchange(NTPCSeats[i]["ST"]["Female"], 0);
+        NTPCSeats[i]["OBC"]["F"]+= exchange(NTPCSeats[i]["ST"]["F"], 0);
     }
     Iterate();    
     for(int i=0; i<3; i++){
         CHSeats[i]["UR"]["OPEN"]+= exchange(CHSeats[i]["OBC"]["OPEN"], 0);
         NTPCSeats[i]["UR"]["OPEN"]+= exchange(NTPCSeats[i]["OBC"]["OPEN"], 0);
-        NTPCSeats[i]["UR"]["Female"]+= exchange(NTPCSeats[i]["OBC"]["Female"], 0);
+        NTPCSeats[i]["UR"]["F"]+= exchange(NTPCSeats[i]["OBC"]["F"], 0);
     }
     Iterate();
     for(int i=0; i<3; i++){
         NTPCSeats[i]["UR"]["OPEN"]+= exchange(NTPCSeats[i]["EWS"]["OPEN"], 0);
-        NTPCSeats[i]["UR"]["Female"]+= exchange(NTPCSeats[i]["EWS"]["Female"], 0);
+        NTPCSeats[i]["UR"]["F"]+= exchange(NTPCSeats[i]["EWS"]["F"], 0);
     }
     Iterate();
 }
@@ -626,7 +656,7 @@ int main(){
     // for(Applicant &x: Applicants) cout <<x.Rank <<", ";
     // cout <<endl;
     MainLogic();
-    // displaySeatMatrix();
+    displaySeatMatrix();
     
     MergeAllotments();
     WriteAllotmentsToCSV();
