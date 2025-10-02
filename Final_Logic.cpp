@@ -437,7 +437,7 @@ bool AllotChoice(Applicant &Applicant, int Branch, string &Category, string &Quo
     string temp;
     if(Applicant.AppliedQuota == 1) temp = "CG_";
     else if(Applicant.AppliedQuota == 2) temp = "NTPC_";
-    else temp = "Kashmiri Migrant";
+    else temp = "KM";
 
     if(Iteration==1){
         if(Applicant.AppliedQuota == 1) ptr = &CHSeats[Branch][Category][Quota], temp+=  Category + "_" + (Quota=="OPEN"?"OP":Quota) ;
@@ -445,45 +445,48 @@ bool AllotChoice(Applicant &Applicant, int Branch, string &Category, string &Quo
         else if(Applicant.AppliedQuota == 3) ptr = &KashmiriSeats[ IntToBranch[Branch] ];
     }else if(Applicant.AppliedQuota == 3) return false;
     else if(Iteration==2){
-        ptr = &CHSeats[Branch][Category]["OPEN"];
-        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch][Category]["OPEN"];
-        
-        temp+=  Category + "_" + "XX-->" + "OP";
+        if(Applicant.AppliedQuota == 1){
+            ptr = &CHSeats[Branch][Category][Quota];
+            temp+=  Category + "_XX-->" + (Quota=="OPEN"?"OP":Quota);
+        }else if(Applicant.Quota=="OPEN"){
+            ptr = &NTPCSeats[Branch][Category][Quota];
+            temp+=  Category + "_PwD-->OP";
+        }
     }else if(Iteration==3 && Category=="ST"){
-        ptr = &CHSeats[Branch]["ST"]["OPEN"];
-        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["ST"]["OPEN"];
+        ptr = &CHSeats[Branch]["ST"][Quota];
+        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["ST"][Quota];
         
-        temp+=  ("SC-->ST_OP");
+        temp+=  ("SC-->ST_") + (Quota=="OPEN"?"OP":Quota);
     }else if(Iteration==4 && Category=="SC"){
-        ptr = &CHSeats[Branch]["SC"]["OPEN"];
-        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["SC"]["OPEN"];
+        ptr = &CHSeats[Branch]["SC"][Quota];
+        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["SC"][Quota];
         
-        temp+=  "ST-->SC_OP";
+        temp+=  ("ST-->SC_") + (Quota=="OPEN"?"OP":Quota);
     }else if(Iteration==5 && Category=="ST"){
-        ptr = &CHSeats[Branch]["ST"]["OPEN"];
-        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["ST"]["OPEN"];
+        ptr = &CHSeats[Branch]["ST"][Quota];
+        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["ST"][Quota];
         
-        temp+=  "SC-->ST_OP";
+        temp+=  ("SC-->ST_") + (Quota=="OPEN"?"OP":Quota);
     }else if(Iteration==6 && (Category=="OBC") ){
-        ptr = &CHSeats[Branch]["OBC"]["OPEN"];
-        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["OBC"]["OPEN"];
+        ptr = &CHSeats[Branch]["OBC"][Quota];
+        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["OBC"][Quota];
         
-        temp+=  "ST-->OBC_OP";
+        temp+=  ("ST-->OBC_") + (Quota=="OPEN"?"OP":Quota);
     }else if(Iteration==7 && Category=="UR"){
-        ptr = &CHSeats[Branch]["UR"]["OPEN"];
-        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["UR"]["OPEN"];
+        ptr = &CHSeats[Branch]["UR"][Quota];
+        if(Applicant.AppliedQuota == 2) ptr = &NTPCSeats[Branch]["UR"][Quota];
         
-        temp+=  "OBC-->UR_OP";
+        temp+=  ("OBC-->UR_") + (Quota=="OPEN"?"OP":Quota);
     }else if(Iteration==8 && Applicant.AppliedQuota == 2){
-        ptr = &NTPCSeats[Branch]["UR"]["OPEN"];
+        ptr = &NTPCSeats[Branch]["UR"][Quota];
         
-        temp+=  "EWS-->UR_OP";
+        temp+=  ("EWS-->UR_") + (Quota=="OPEN"?"OP":Quota);
     }
 
     if( ptr && *ptr ){
         (*ptr)--;
 
-        if(Applicant.AllottedBranch!=-1){
+        if(Applicant.AllottedBranch!=-1 && Applicant.AllottedBranch!=Branch){
             if(Applicant.AppliedQuota == 1) CHSeats[Applicant.AllottedBranch][Applicant.AllottedCategory][Applicant.AllottedQuota]++;
             else if(Applicant.AppliedQuota == 2) NTPCSeats[Applicant.AllottedBranch][Applicant.AllottedCategory][Applicant.AllottedQuota]++;
         }else SeatsFilled++;
@@ -656,7 +659,7 @@ int main(){
     // for(Applicant &x: Applicants) cout <<x.Rank <<", ";
     // cout <<endl;
     MainLogic();
-    displaySeatMatrix();
+    // displaySeatMatrix();
     
     MergeAllotments();
     WriteAllotmentsToCSV();
