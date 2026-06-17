@@ -1,8 +1,7 @@
 allotted.csv
 Cleaned Applicants.csv
-new seat matrix.csv
+new_seat_matrix.csv
 
-# Keep everything inside specific folders
-"Minor Report and all"/**
-"Back Up"/**
-"Old"/**
+"Minor Report and all"/
+"Back Up"/
+"Old"/
